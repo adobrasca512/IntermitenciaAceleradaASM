@@ -1,39 +1,45 @@
 ser r16
 out ddrd,r16
-ldi r17,100; 100 veces un ms es un s
+
 
 
 main: 
 
-ldi r16,0b10000000
+reestablecer:
+ldi r17,100; 100 veces un ms es un s
+rep:
+ldi r16,0b00000000; prender leds
+encender: ;mientras no este todo encendido ejecutamos delay
 
-repetir:
 out portd,r16
 
 push r17
-call funcion
+call delay1ms
 pop r17
-
-dec r17
-cpi r17,0
-breq setear
+dec r17; bajamos los 100
+cpi r17,0; verificamos que no sea 0 aun
+breq reestablecer
+;ldi r17,100; 100 veces un ms es un s
+;rjmp encender
+;aqui setear
+continuar:
 lsr r16
 ori r16,0b10000000
 cpi r16,0b11111111
-brne repetir
-;ldi r18,0b00000000
+
+brne encender
+;sacamos los leds encedidos todos
 out portd,r16
 
 push r17
-
-call funcion
+call delay1ms
 pop r17
 
 
+rjmp rep
+ret 
 
-rjmp main
-
-  funcion:
+  delay1ms:
 
   	PUSH YH
 	PUSH YL
@@ -63,6 +69,3 @@ L1: dec  r19
 	pop YH
 	ret	
 	; aqui seteo el valor de r17
-	setear:
-	ldi r17,100
-	rcall main
